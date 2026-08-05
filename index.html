@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONIKE SOCIAL</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  body { background: #0a0a0a; color: white; }
+  .nav { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 10px 0; }
+  .page { display: none; padding: 20px; padding-bottom: 80px; }
+  .active { display: block; }
+  .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #00ff88; }
+  .btn { background: #00ff88; color: black; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="text-center text-2xl font-bold text-green-400 p-4">ONIKE SOCIAL</div>
+
+<!-- PAGES -->
+<div id="home" class="page active">
+  <h2 class="text-xl font-bold">Home Feed</h2>
+  <div class="bg-gray-900 p-3 rounded-lg mt-3">
+    <b>Admin</b><p>Welcome to ONIKE! Upload your first post 👇</p>
+  </div>
+</div>
+
+<div id="blog" class="page">
+  <h2 class="text-xl font-bold">Blogs</h2>
+  <button class="btn w-full p-2 rounded mt-3">+ Write Blog</button>
+</div>
+
+<div id="login" class="page">
+  <h2 class="text-xl font-bold">Login / Register</h2>
+  <input placeholder="Email" class="w-full p-2 rounded bg-gray-800 mt-3">
+  <input placeholder="Password" type="password" class="w-full p-2 rounded bg-gray-800 mt-3">
+  <button class="btn w-full p-2 rounded mt-3">Login</button>
+</div>
+
+<div id="chat" class="page">
+  <h2 class="text-xl font-bold">Chatroom</h2>
+  <div class="bg-gray-900 p-3 rounded-lg mt-3">Group Chat Coming Soon</div>
+</div>
+
+<div id="messages" class="page">
+  <h2 class="text-xl font-bold">Messages</h2>
+  <button class="btn w-full p-2 rounded mt-3">🎤 Voice Note</button>
+  <button class="btn w-full p-2 rounded mt-3">🎥 Video Note</button>
+</div>
+
+<div id="media" class="page">
+  <h2 class="text-xl font-bold">Media Hub</h2>
+  <div class="flex gap-2 mt-3">
+    <button class="btn flex-1 p-2 rounded">Videos</button>
+    <button class="btn flex-1 p-2 rounded">Audio</button>
+    <button class="btn flex-1 p-2 rounded">Games</button>
+  </div>
+  <button class="btn w-full p-2 rounded mt-3">+ Upload Video/Audio/Game</button>
+</div>
+
+<div id="profile" class="page">
+  <h2 class="text-xl font-bold">Profile</h2>
+  <img src="https://via.placeholder.com/100" class="profile-pic mx-auto mt-3">
+  <p class="text-center mt-2">@onike_user</p>
+  <button class="btn w-full p-2 rounded mt-3">Edit Profile</button>
+</div>
+
+<div id="menu" class="page">
+  <h2 class="text-xl font-bold">Menu</h2>
+  <p class="mt-3">Settings, Privacy, Logout</p>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <button onclick="showPage('home')">🏠</button>
+  <button onclick="showPage('blog')">📝</button>
+  <button onclick="showPage('media')">🎬</button>
+  <button onclick="showPage('chat')">💬</button>
+  <button onclick="showPage('profile')">👤</button>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+  </html>
