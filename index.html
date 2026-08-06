@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONIKE SOCIAL</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+  body { background: #0a0a0a; color: #fff; }
+ .header { background: #1a1a1a; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff0000; }
+ .logo { font-size: 22px; font-weight: bold; color: #ff0000; }
+ .btn { background: #ff0000; color: #fff; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+ .btn-secondary { background: #333; }
+ .feed { max-width: 600px; margin: 0 auto; padding: 10px; }
+ .post-box { background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+ .post-box textarea { width: 100%; background: #2a2a2a; border: none; color: #fff; padding: 10px; border-radius: 8px; resize: none; }
+ .post { background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+ .post img { width: 100%; border-radius: 8px; margin-top: 10px; }
+  
+  /* POPUP LOGIN */
+ .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+ .modal-content { background: #1a1a1a; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; border: 2px solid #ff0000; }
+ .modal-content input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #333; color: #fff; border-radius: 8px; }
+ .close { float: right; font-size: 24px; cursor: pointer; color: #ff0000; }
+ .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">ONIKE SOCIAL</div>
+  <div id="authButtons">
+    <button class="btn btn-secondary" onclick="showModal('login')">Login</button>
+    <button class="btn" onclick="showModal('register')">Register</button>
+  </div>
+  <div id="userInfo" class="hidden">
+    <span id="userEmail"></span>
+    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="feed">
+  <div id="postBox" class="post-box hidden">
+    <textarea id="postText" placeholder="What's on your mind?" rows="3"></textarea>
+    <input type="file" id="postImage" accept="image/*">
+    <button class="btn" onclick="createPost()" style="margin-top:10px;">Post</button>
+  </div>
+  <div id="feed"></div>
+</div>
+
+<!-- LOGIN/REGISTER POPUP -->
+<div id="authModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle">Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn" id="authActionBtn" onclick="handleAuth()">Login</button>
+    <p style="margin-top:10px; text-align:center;">
+      <a href="#" onclick="switchMode()" id="switchText">Don't have an account? Register</a>
+    </p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC8Qa2LxQ4hN3Q8xK7Z9pR1tY2wE3rT4uI",
+  authDomain: "onike-social.firebaseapp.com",
+  databaseURL: "https://onike-social-default-rtdb.firebaseio.com",
+  projectId: "onike-social",
+  storageBucket: "onike-social.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcdef1234567890abcdef"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const storage = firebase.storage();
+
+let authMode = 'login';
+
+function showModal(mode) {
+  authMode = mode;
+  document.getElementById('authModal').style.display = 'flex';
+  document.getElementById('modalTitle').innerText = mode === 'login'? 'Login' : 'Register';
+  document.getElementById('authActionBtn').innerText = mode === 'login'? 'Login' : 'Register';
+  document.getElementById('switchText').innerText = mode === 'login'? "Don't have an account? Register" : "Already have an account? Login";
+}
+function closeModal() { document.getElementById('authModal').style.display = 'none'; }
+function switchMode() { showModal(authMode === 'login'? 'register' : 'login'); }
+
+function handleAuth() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const action = authMode === 'login'? auth.signInWithEmailAndPassword : auth.createUserWithEmailAndPassword;
+  
+  action(email, password)
+ .then(() => { alert('Success!'); closeModal(); })
+ .catch(e => alert(e.message));
+}
+
+function logout() { auth.signOut(); }
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('authButtons').classList.add('hidden');
+    document.getElementById('userInfo').classList.remove('hidden');
+    document.getElementById('postBox').classList.remove('hidden');
+    document.getElementById('userEmail').innerText = user.email;
+    loadPosts();
+  } else {
+    document.getElementById('authButtons').classList.remove('hidden');
+    document.getElementById('userInfo').classList.add('hidden');
+    document.getElementById('postBox').classList.add('hidden');
+    loadPosts(); // Guests can still see posts
+  }
+});
+
+function createPost() {
+  const text = document.getElementById('postText').value;
+  const file = document.getElementById('postImage').files[0];
+  if (!text &&!file) return alert('Write something or add photo');
+  
+  if (file) {
+    const storageRef = storage.ref('posts/' + Date.now() + file.name);
+    storageRef.put(file).then(snap => snap.ref.getDownloadURL()).then(url => {
+      savePost(text, url);
+    });
+  } else { savePost(text, ''); }
+}
+
+function savePost(text, imageUrl) {
+  db.ref('posts').push({
+    text, imageUrl,
+    user: auth.currentUser.email,
+    time:
