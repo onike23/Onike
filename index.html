@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONIKE UNIVERSE</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+  
+  body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0f1a3a 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+    pointer-events: none; z-index: -1;
+  }
+  
+  /* TOP BAR */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; background: rgba(15,15,30,0.8); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(139,92,246,0.2); position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-weight: 800; font-size: 20px; background: linear-gradient(90deg,#8b5cf6,#3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .menu-btn { font-size: 24px; cursor: pointer; }
+  
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; left: -250px; top: 0; width: 250px; height: 100%;
+    background: rgba(10,10,26,0.95); border-right: 1px solid rgba(139,92,246,0.2);
+    padding: 20px; transition: 0.3s; z-index: 200;
+  }
+  .sidebar.active { left: 0; }
+  .sidebar a { display: block; padding: 12px; margin: 5px 0; color: #e2e8f0; text-decoration: none; border-radius: 8px; }
+  .sidebar a:hover { background: rgba(139,92,246,0.2); }
+  
+  /* PAGES */
+  .page { display: none; padding: 20px; }
+  .page.active { display: block; }
+  
+  .hero {
+    text-align: center; padding: 60px 20px;
+    background: linear-gradient(180deg, rgba(139,92,246,0.1), transparent);
+    border-radius: 15px; margin-bottom: 30px;
+  }
+  .hero h1 { font-size: 32px; margin-bottom: 10px; }
+  .btn { padding: 12px 25px; background: linear-gradient(90deg,#8b5cf6,#3b82f6); border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; }
+  
+  .stats { display: flex; justify-content: space-around; text-align: center; margin: 30px 0; }
+  .stat h2 { font-size: 28px; color: #8b5cf6; }
+  
+  input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: rgba(30,30,50,0.6); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: white; }
+  
+  .chat-box { height: 300px; overflow-y: auto; background: rgba(20,20,40,0.5); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+  
+  /* SECRET ADMIN */
+  .admin { background: rgba(255,0,0,0.05); border: 1px solid rgba(255,0,0,0.2); padding: 20px; border-radius: 10px; }
+  .user-card { background: rgba(30,30,50,0.6); padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; }
+  .delete-btn { background: red; padding: 5px 10px; border: none; color: white; border-radius: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">ONIKE</div>
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+</div>
+
+<!-- SIDEBAR MENU -->
+<div class="sidebar" id="sidebar">
+  <a href="#" onclick="showPage('home')">🏠 Home</a>
+  <a href="#" onclick="showPage('videos')">🎬 Videos</a>
+  <a href="#" onclick="showPage('chatroom')">💬 Chatroom</a>
+  <a href="#" onclick="showPage('messages')">✉️ Messages</a>
+  <a href="#" onclick="showPage('profile')">👤 Profile</a>
+  <a href="#" onclick="showPage('upload')">⬆️ Upload Hub</a>
+  <a href="#" onclick="showPage('voice')">🎙️ Voice Notes</a>
+  <a href="#" onclick="showPage('videonote')">📹 Video Notes</a>
+  <a href="#" onclick="showPage('login')">🔑 Login</a>
+  <a href="#" onclick="showPage('register')">📝 Register</a>
+  <a href="#" onclick="openAdmin()">🔒</a> <!-- INVISIBLE ADMIN BUTTON -->
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="home">
+  <div class="hero">
+    <h1>ONIKE UNIVERSE</h1>
+    <p>Stream. Chat. Connect. Earn.</p>
+    <button class="btn" onclick="showPage('register')">Get Started Today</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><h2>1000+</h2><p>STREAMERS</p></div>
+    <div class="stat"><h2>5000+</h2><p>VIDEOS</p></div>
+    <div class="stat"><h2>24/7</h2><p>LIVE</p></div>
+  </div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="page" id="login">
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button class="btn" onclick="login()">Login</button>
+</div>
+
+<!-- REGISTER PAGE -->
+<div class="page" id="register">
+  <h2>Register</h2>
+  <input type="text" id="regName" placeholder="Username">
+  <input type="email" id="regEmail" placeholder="Email">
+  <input type="password" id="regPass" placeholder="Password">
+  <button class="btn" onclick="register()">Create Account</button>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="page" id="profile">
+  <h2>Your Profile</h2>
+  <p id="profileInfo">Login to see profile</p>
+</div>
+
+<!-- CHATROOM PAGE -->
+<div class="page" id="chatroom">
+  <h2>Global Chatroom</h2>
+  <div class="chat-box" id="chatBox"></div>
+  <input type="text" id="chatInput" placeholder="Type message...">
+  <button class="btn" onclick="sendChat()">Send</button>
+</div>
+
+<!-- MESSAGES PAGE -->
+<div class="page" id="messages"><h2>Direct Messages</h2><p>Coming soon...</p></div>
+
+<!-- VIDEOS PAGE -->
+<div class="page" id="videos"><h2>Videos</h2><p>Video grid coming soon...</p></div>
+
+<!-- UPLOAD PAGE -->
+<div class="page" id="upload"><h2>Upload Hub</h2><p>Upload Video, Audio, Voice Note, Video Note</p></div>
+
+<!-- VOICE NOTES -->
+<div class="page" id="voice"><h2>Voice Notes</h2><p>Record and play voice notes</p></div>
+
+<!-- VIDEO NOTES -->
+<div class="page" id="videonote"><h2>Video Notes</h2><p>Short video feed</p></div>
+
+<!-- SECRET ADMIN PAGE - INVISIBLE TO USERS -->
+<div class="page" id="admin">
+  <div class="admin">
+    <h2>🔒 SECRET ADMIN PANEL</h2>
+    <p>Only for Gerardo</p>
+    <input type="text" id="searchUser" placeholder="Search username..." onkeyup="searchUsers()">
+    <div id="userList"></div>
+  </div>
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem('onikeUsers')) || [];
+let currentUser = null;
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('active');
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  toggleSidebar();
+}
+
+function register() {
+  let name = document.getElementById('regName').value;
+  let email = document.getElementById('regEmail').value;
+  let pass = document.getElementById('regPass').value;
+  users.push({name, email, pass});
+  localStorage.setItem('onikeUsers', JSON.stringify(users));
+  alert('Account Created!');
+  showPage('login');
+}
+
+function login() {
+  let email = document.getElementById('loginEmail').value;
+  let pass = document.getElementById('loginPass').value;
+  let user = users.find(u => u.email === email && u.pass === pass);
+  if(user) {
+    currentUser = user;
+    document.getElementById('profileInfo').innerText = `Welcome ${user.name}`;
+    alert('Logged in!');
+    showPage('profile');
+  } else alert('Wrong credentials');
+}
+
+function sendChat() {
+  let msg = document.getElementById('chatInput').value;
+  document.getElementById('chatBox').innerHTML += `<p><b>${currentUser?.name || 'Guest'}:</b> ${msg}</p>`;
+  document.getElementById('chatInput').value = '';
+}
+
+// SECRET ADMIN FUNCTIONS
+function openAdmin() {
+  let pass = prompt('Enter Admin Password:');
+  if(pass === 'gerardo23') {
+    showPage('admin');
+    loadUsers();
+  } else alert('Wrong Password');
+}
+
+function loadUsers() {
+  let html = '';
+  users.forEach((u, i) => {
+    html += `<div class="user-card">
+      <span>${u.name} - ${u.email}</span>
+      <button class="delete-btn" onclick="deleteUser(${i})">Delete</button>
+    </div>`;
+  });
+  document.getElementById('userList').innerHTML = html;
+}
+
+function searchUsers() {
+  let q = document.getElementById('searchUser').value.toLowerCase();
+  let filtered = users.filter(u => u.name.toLowerCase().includes(q));
+  let html = '';
+  filtered.forEach((u, i) => {
+    let realIndex = users.indexOf(u);
+    html += `<div class="user-card">
+      <span>${u.name} - ${u.email}</span>
+      <button class="delete-btn" onclick="deleteUser(${realIndex})">Delete</button>
+    </div>`;
+  });
+  document.getElementById('userList').innerHTML = html;
+}
+
+function deleteUser(index) {
+  if(confirm('Delete this user?')) {
+    users.splice(index, 1);
+    localStorage.setItem('onikeUsers', JSON.stringify(users));
+    loadUsers();
+  }
+}
+</script>
+</body>
+  </html>
